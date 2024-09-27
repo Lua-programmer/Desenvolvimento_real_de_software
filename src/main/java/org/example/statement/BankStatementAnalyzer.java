@@ -1,6 +1,7 @@
 package org.example.statement;
 
 import org.example.domain.BankTransaction;
+import org.example.inteface.BankStatementParser;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,12 +12,11 @@ import java.util.List;
 public class BankStatementAnalyzer {
 
     private static final String RESOURCES = "src/main/resources/";
-    private static final BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
 
-    public void analyze(final String fileName) throws Exception {
+    public void analyze(final String fileName, BankStatementParser bankStatementParser) throws Exception {
         final Path path = Paths.get(RESOURCES + fileName);
         final List<String> lines = Files.readAllLines(path);
-        final List<BankTransaction> bankTransactions = bankStatementCSVParser.parseLinesFromCSV(lines);
+        final List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
         final BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
         collectSummary(bankStatementProcessor);
     }
