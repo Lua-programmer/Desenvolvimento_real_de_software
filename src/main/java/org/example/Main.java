@@ -11,5 +11,6 @@ public class Main {
         final String fileName = "extrato.csv";
 
         bankStatementAnalyzer.analyze(fileName, bankStatementCSVParser);
+
     }
 }

@@ -1,15 +1,27 @@
 package org.example.statement;
 
 import org.example.domain.BankTransaction;
+import org.example.inteface.BankTransactionFilter;
+import org.example.inteface.BankTransactionSummarizer;
 
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
-public class BankStatementProcessor {
+public class BankStatementProcessor  {
     private final List<BankTransaction> bankTransactions;
+
 
     public BankStatementProcessor(final List<BankTransaction> bankTransactions) {
         this.bankTransactions = bankTransactions;
+    }
+
+    public double summarizeTransactions(final BankTransactionSummarizer bankTransactionSummarizer) {
+        double result = 0;
+        for (final BankTransaction bankTransaction : bankTransactions) {
+            result = bankTransactionSummarizer.summarize(result, bankTransaction);
+        }
+        return result;
     }
 
     public double calculateTotalAmount() {
@@ -39,4 +51,19 @@ public class BankStatementProcessor {
         }
         return total;
     }
+
+    public List<BankTransaction> findTransactions(final BankTransactionFilter bankTransactionFilter) {
+        final List<BankTransaction> result = new ArrayList<>();
+        for (final BankTransaction bankTransaction : bankTransactions) {
+            if (bankTransactionFilter.test(bankTransaction)) {
+                result.add(bankTransaction);
+            }
+        }
+        return result;
+    }
+
+    public List<BankTransaction> findTransactionsGreaterThanEqual(final int amount) {
+        return findTransactions(bankTransaction -> bankTransaction.getAmount() >= amount);
+    }
+
 }
